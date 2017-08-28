@@ -16,11 +16,12 @@ const (
 
 // Authorize request information
 type AuthorizeRequest struct {
-	Type        AuthorizeRequestType
-	Client      Client
-	Scope       string
-	RedirectUri string
-	State       string
+	Type            AuthorizeRequestType
+	Client          Client
+	Scope           string
+	RedirectUri     string
+	State           string
+	FingerprintData string
 
 	// Set if request is authorized
 	Authorized bool
@@ -97,11 +98,12 @@ func (s *Server) HandleAuthorizeRequest(w *Response, r *http.Request) *Authorize
 	}
 
 	ret := &AuthorizeRequest{
-		State:       r.Form.Get("state"),
-		Scope:       r.Form.Get("scope"),
-		RedirectUri: unescapedUri,
-		Authorized:  false,
-		HttpRequest: r,
+		State:           r.Form.Get("state"),
+		Scope:           r.Form.Get("scope"),
+		FingerprintData: r.Form.Get("fpdata"),
+		RedirectUri:     unescapedUri,
+		Authorized:      false,
+		HttpRequest:     r,
 	}
 
 	// must have a valid client
