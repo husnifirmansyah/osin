@@ -57,6 +57,9 @@ type AuthorizeData struct {
 	// State data from request
 	State string
 
+	// Fingerprint data from request
+	FingerprintData string
+
 	// Date created
 	CreatedAt time.Time
 
@@ -186,13 +189,14 @@ func (s *Server) FinishAuthorizeRequest(w *Response, r *http.Request, ar *Author
 		} else {
 			// generate authorization token
 			ret := &AuthorizeData{
-				Client:      ar.Client,
-				CreatedAt:   s.Now(),
-				ExpiresIn:   ar.Expiration,
-				RedirectUri: ar.RedirectUri,
-				State:       ar.State,
-				Scope:       ar.Scope,
-				UserData:    ar.UserData,
+				Client:          ar.Client,
+				CreatedAt:       s.Now(),
+				ExpiresIn:       ar.Expiration,
+				RedirectUri:     ar.RedirectUri,
+				State:           ar.State,
+				Scope:           ar.Scope,
+				UserData:        ar.UserData,
+				FingerprintData: ar.FingerprintData,
 			}
 
 			// generate token code
@@ -214,6 +218,7 @@ func (s *Server) FinishAuthorizeRequest(w *Response, r *http.Request, ar *Author
 			// redirect with code
 			w.Output["code"] = ret.Code
 			w.Output["state"] = ret.State
+			w.Output["fpdata"] = ret.FingerprintData
 		}
 	} else {
 		// redirect with error
